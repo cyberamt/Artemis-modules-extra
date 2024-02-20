@@ -36,7 +36,7 @@ services:
       context: Artemis-modules-extra
       dockerfile: karton_detectem/Dockerfile
     volumes: ["./docker/karton.ini:/etc/karton/karton.ini", "${DOCKER_COMPOSE_ADDITIONAL_SHARED_DIRECTORY:-./shared}:/shared/"]
-    depends_on: [karton-logger, redis, detectem_splash]
+    depends_on: [karton-system, detectem_splash]
     environment:
       - SETUP_SPLASH=False
       - SPLASH_URL=http://detectem_splash:8050
