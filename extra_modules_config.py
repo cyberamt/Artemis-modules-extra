@@ -47,12 +47,8 @@ class ExtraModulesConfig:
         cast=decouple.Csv(str),
         default=",".join(
             [
-                "base64encode",
                 "chardoubleencode",
                 "charencode",
-                "commalessmid",
-                "randomcase",
-                "space2randomblank",
                 "/opt/karton_sqlmap/tamper/tamper_double_quotes.py",
             ]
         ),
