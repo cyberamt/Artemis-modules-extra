@@ -42,16 +42,33 @@ class ExtraModulesConfig:
         default=25,
     )
 
-    SQLMAP_TAMPER_SCRIPTS = decouple.config(
-        "SQLMAP_TAMPER_SCRIPTS",
+    # Command-line options that will be passed to sqlmap
+    SQLMAP_COMMAND_LINE_OPTIONS = decouple.config(
+        "SQLMAP_COMMAND_LINE_OPTIONS",
         cast=decouple.Csv(str),
         default=",".join(
             [
-                "chardoubleencode",
-                "charencode",
-                "/opt/karton_sqlmap/tamper/tamper_double_quotes.py",
+                "--technique",
+                "BU",
+                "--skip-waf",
+                "--skip-heuristics",
             ]
         ),
+    )
+
+    # Tamper scripts to be used by sqlmap (sqlmap will be executed once per tamper script + once without any)
+    SQLMAP_TAMPER_SCRIPTS = decouple.config(
+        "SQLMAP_TAMPER_SCRIPTS",
+        cast=decouple.Csv(str),
+        default=",".join(["chardoubleencode"]),
+    )
+
+    # Timeout counted in seconds, after which the what-vpn module terminates a connection and starts using the next sniffer.
+    # Some of VPN gateways do not respond in any way to the HTTP(S) requests, so the timeout variable should be optimized in
+    # order to avoid false negatives while not blocking the task for too long.
+    WHATVPN_TIMEOUT_SECONDS = decouple.config(
+        "WHATVPN_TIMEOUT_SECONDS",
+        default="2",
     )
 
     # WPScan API key

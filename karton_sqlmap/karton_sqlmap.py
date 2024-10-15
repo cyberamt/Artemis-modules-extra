@@ -14,6 +14,7 @@ from artemis import http_requests, load_risk_class
 from artemis.binds import Service, TaskStatus, TaskType
 from artemis.config import Config
 from artemis.module_base import ArtemisBase
+from artemis.modules.data.static_extensions import STATIC_EXTENSIONS
 from artemis.task_utils import get_target_url
 from bs4 import BeautifulSoup
 from karton.core import Task
@@ -71,14 +72,11 @@ class SQLmap(ArtemisBase):  # type: ignore
                         "-u",
                         url,
                         "--batch",
-                        "--technique",
-                        "BU",
-                        "--skip-waf",
-                        "--skip-heuristics",
                         "-v",
                         "1",
                     ]
                     + arguments
+                    + ExtraModulesConfig.SQLMAP_COMMAND_LINE_OPTIONS
                     + additional_configuration
                 )
 
@@ -301,10 +299,7 @@ class SQLmap(ArtemisBase):  # type: ignore
 
                 new_url = new_url.split("#")[0]
 
-                if any(
-                    new_url.split("?")[0].lower().endswith(extension)
-                    for extension in [".png", ".jpg", ".svg", ".jpeg", ".css", ".js", ".ico", ".woff2"]
-                ):
+                if any(new_url.split("?")[0].lower().endswith(extension) for extension in STATIC_EXTENSIONS):
                     # Let's not inject image/style paths
                     continue
 
