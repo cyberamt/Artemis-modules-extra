@@ -13,6 +13,7 @@ import timeout_decorator
 from artemis import http_requests, load_risk_class
 from artemis.binds import Service, TaskStatus, TaskType
 from artemis.config import Config
+from artemis.karton_utils import check_connection_to_base_url_and_save_error
 from artemis.module_base import ArtemisBase
 from artemis.modules.data.static_extensions import STATIC_EXTENSIONS
 from artemis.task_utils import get_target_url
@@ -87,7 +88,7 @@ class SQLmap(ArtemisBase):  # type: ignore
                 data_str = data.decode("ascii", errors="ignore")
                 self.log.info("url %s, cmd %s, output %s", url, cmd, data_str)
 
-                if "in case of continuous data retrieval problems you are advised to try a switch '--no-cast'":
+                if "try a switch '--no-cast'" in data_str:
                     cmd += ["--no-cast"]
                     data = subprocess.check_output(cmd)
                     data_str = data.decode("ascii", errors="ignore")
@@ -271,6 +272,9 @@ class SQLmap(ArtemisBase):  # type: ignore
         )
 
     def run(self, current_task: Task) -> None:
+        if not check_connection_to_base_url_and_save_error(self.db, current_task):
+            return
+
         url = get_target_url(current_task)
         self.log.info("Requested to crawl and test SQL injection on %s", url)
         url_parsed = urllib.parse.urlparse(url)
